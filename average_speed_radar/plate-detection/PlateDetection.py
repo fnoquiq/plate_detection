@@ -4,55 +4,68 @@ import numpy as np
 import tkinter
 import pytesseract
 import cv2
+from copy import copy
 
 
 class PlateDetection:
     PERIMETRO_CONTORNO = 150
-    path_directory = './'
 
-    def __init__(self, path=',/'):
+    path = None
+    imagem_limpa = None
+    imagem_limitada = None
+    imagem_cortada = None
+    imagem_modificada = None
+    imagem_saida = []
+    contornos = None
+
+    def __init__(self, path):
         self.path = path
+        self.imagem_limpa = cv2.imread(path)
+        self.detecta_placa()
 
-    def detectar_placa(self):
-        images_paths = [os.path.join(self.path, f) for f in os.listdir(self.path)]
-        for image_path in images_paths:
-            self.__procura_contornos(image_path)
+    def detecta_placa(self):
+        self.imagem_limpa = self.carrega_imagem()
+        self.imagem_cortada = self.limita_imagem(self.imagem_limpa)
+        self.imagem_modificada = self.processa_imagem_e_gera_contornos(self.imagem_cortada)
+        self.__desenhaContornos(self.imagem_limpa)
 
-    def __procura_contornos(self, path_and_filename):
-        frame = cv2.imread(path_and_filename)
+    def carrega_imagem(self):
+        return cv2.imread(self.path)
 
+    def limita_imagem(self, imagem):
+
+        # gera uma copia da imagem
+        self.imagem_limitada = copy(imagem)
         # limite horizontal
-        cv2.line(frame, (0, 350), (860, 350), (0, 0, 255), 1)
+        self.imagem_limitada = cv2.line(self.imagem_limitada, (0, 350), (860, 350), (0, 0, 255), 1)
         # limite vertical 1
-        cv2.line(frame, (220, 0), (220, 480), (0, 0, 255), 1)
+        self.imagem_limitada = cv2.line(self.imagem_limitada, (220, 0), (220, 480), (0, 0, 255), 1)
         # limite vertical 2
-        cv2.line(frame, (500, 0), (500, 480), (0, 0, 255), 1)
-
-        cv2.imshow('SAIDA', frame)
+        self.imagem_limitada = cv2.line(self.imagem_limitada, (500, 0), (500, 480), (0, 0, 255), 1)
 
         # região de busca
-        # res = frame[350:, 220:500]
+        #imagem = imagem[350:, 220:500]
+
+        return imagem
+
+    def processa_imagem_e_gera_contornos(self, imagem):
 
         # escala de cinza
-        frame_modified = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        imagem = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
 
         # limiarização
-        ret, frame_modified = cv2.threshold(frame_modified, 90, 255, cv2.THRESH_BINARY)
+        ret, imagem = cv2.threshold(imagem, 90, 255, cv2.THRESH_BINARY)
 
         # desfoque
-        frame_modified = cv2.GaussianBlur(frame_modified, (25, 25), 0)
+        imagem = cv2.GaussianBlur(imagem, (25, 25), 0)
 
         # lista os contornos
-        contornos, hier = cv2.findContours(frame_modified, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        self.contornos, hier = cv2.findContours(imagem, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
-        cv2.imshow('RES', frame)
+        return imagem
 
-        self.__desenhaContornos(contornos, frame)
-
-        cv2.destroyAllWindows()
-
-    def __desenhaContornos(self, contornos, imagem):
-        for c in contornos:
+    def __desenhaContornos(self, imagem):
+        for c in self.contornos:
             # perimetro do contorno, verifica se o contorno é fechado
             perimetro = cv2.arcLength(c, True)
             if perimetro > self.PERIMETRO_CONTORNO:
@@ -65,11 +78,35 @@ class PlateDetection:
                     cv2.rectangle(imagem, (x, y), (x + a, y + l), (0, 255, 0), 2)
                     roi = imagem[y:y + l, x:x + a]
 
-                    cv2.imshow('RES', roi)
-                    cv2.waitKey(400)
+                    self.imagem_saida.append(roi)
 
         return imagem
 
+    def inteface_grafica_imagem_limpa(self):
+        cv2.imshow('Imagem Limpa' + self.path, self.imagem_limpa)
 
-detection = PlateDetection('./sample_images/positive')
-detection.detectar_placa()
+    def inteface_grafica_imagem_limitada(self):
+        cv2.imshow('Imagem Limitada' + self.path, self.imagem_limitada)
+
+    def inteface_grafica_imagem_modificada(self):
+        cv2.imshow('Imagem Modificada' + self.path, self.imagem_modificada)
+
+    def inteface_grafica_imagem_saida(self):
+        for saida in self.imagem_saida:
+            print('ola')
+            cv2.imshow('Contornos' + self.path, saida)
+
+    def interface_grafica_fechar_tudo(self):
+        cv2.destroyAllWindows()
+
+
+path = './sample_images/positive/'
+
+images_paths = [os.path.join(path, f) for f in os.listdir(path)]
+for image_path in images_paths:
+    detection = PlateDetection(image_path)
+    detection.detecta_placa()
+    detection.inteface_grafica_imagem_limpa()
+    detection.inteface_grafica_imagem_saida()
+    cv2.waitKey(3000)
+    detection.interface_grafica_fechar_tudo()
