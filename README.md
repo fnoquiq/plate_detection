@@ -1,4 +1,4 @@
-# Average-speed-radar
+# Average_speed_radar-radar_module
 
 Gabriel Teixeira Mesquita
 
@@ -31,4 +31,4 @@ opencv-contrib-python
 tesseract
 pillow
 
-## [Mais documentações]()
+## [Average Speed Radar - Central API](https://github.com/fnoquiq/average_speed_radar-central_api)
