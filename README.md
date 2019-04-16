@@ -1,4 +1,4 @@
-# Average_speed_radar-radar_module
+# Radar de velocidade média - Módulo
 
 Gabriel Teixeira Mesquita
 
@@ -32,3 +32,4 @@ tesseract
 pillow
 
 ## [Average Speed Radar - Central API](https://github.com/fnoquiq/average_speed_radar-central_api)
+## [Average Speed Radar - Documentação](https://github.com/fnoquiq/average_speed_radar-docs)
