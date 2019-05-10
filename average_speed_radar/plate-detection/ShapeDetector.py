@@ -14,7 +14,7 @@ class ShapeDetector:
 
     __shapes = None
     __shapes_sides = 3
-    __perimeter_limit = 80
+    __perimeter_limit = 10
     __perimeter_approximate = 0.3
 
     def __init__(self, img_in):
