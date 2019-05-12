@@ -1,5 +1,5 @@
-from ImageLimitator import ImageLimitator
-from ShapeDetector import ShapeDetector
+from plate_detection.ImageLimitator import ImageLimitator
+from plate_detection.ShapeDetector import ShapeDetector
 
 import cv2
 
@@ -22,10 +22,3 @@ class PlateDetection:
 
     def load_image(self, path):
         return cv2.imread(path)
-
-
-detection = PlateDetection("./sample_images/positive/OJJ-3984.jpg")
-cv2.imshow('Imagem com Limites', detection.ImageLimitator.img_with_limiter_indicator)
-cv2.imshow('Imagem Contornada', detection.ShapeDetector.image_with_shapes)
-cv2.waitKey(10000)
-cv2.destroyAllWindows()

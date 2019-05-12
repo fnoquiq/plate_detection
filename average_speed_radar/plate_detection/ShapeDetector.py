@@ -1,7 +1,8 @@
 from copy import copy
-from ImageProcessor import process_image
+from plate_detection.ImageProcessor import process_image
 
 import cv2
+import numpy as np
 
 
 class ShapeDetector:
@@ -16,7 +17,7 @@ class ShapeDetector:
     __shapes_sides = 4
     # Select the contour with __shapes_sides corners
     __max_shapes = 10
-    # Sort the contours based on area , so that the number plate will be in top '__max_shapes' contours
+    # Sort the contours based on area , so that the number plate-detection will be in top '__max_shapes' contours
     __perimeter_approximate = 0.06
     # Approximating with % error
 
@@ -28,7 +29,7 @@ class ShapeDetector:
         self.processed_image = process_image(self.cuted_image)
 
         self.__find_shapes()
-        self.__draw_shapes()
+        self.__draw_shapes_in_cuted_image()
 
     def __find_shapes(self):
 
@@ -45,6 +46,6 @@ class ShapeDetector:
                 self.screenCnt = approx
                 break
 
-    def __draw_shapes(self):
+    def __draw_shapes_in_cuted_image(self):
 
         self.image_with_shapes = cv2.drawContours(self.cuted_image, [self.screenCnt], -1, (0, 255, 0), 3)

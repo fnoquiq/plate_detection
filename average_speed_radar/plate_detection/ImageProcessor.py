@@ -4,8 +4,6 @@ import numpy as np
 from copy import copy
 
 
-# https://learndeltax.blogspot.com/2016/02/number-plate-detection-in-opencv-python.html
-
 def __to_gray_scale_image(img_in):
     img_out = cv2.cvtColor(copy(img_in), cv2.COLOR_BGR2GRAY)
     return img_out
