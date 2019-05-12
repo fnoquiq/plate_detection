@@ -5,45 +5,46 @@ import cv2
 
 
 class ShapeDetector:
-
-    image_in = None
-    image_processed = None
+    original_image = None
+    cuted_image = None
+    processed_image = None
     image_with_shapes = None
 
     image_shapes = []
+    screenCnt = None
 
-    __shapes = None
-    __shapes_sides = 3
-    __perimeter_limit = 10
-    __perimeter_approximate = 0.3
+    __shapes_sides = 4
+    # Select the contour with __shapes_sides corners
+    __max_shapes = 10
+    # Sort the contours based on area , so that the number plate will be in top '__max_shapes' contours
+    __perimeter_approximate = 0.06
+    # Approximating with % error
 
-    def __init__(self, img_in):
-        self.img_in = img_in
+    def __init__(self, original_image, cuted_image):
 
-        self.image_processed = process_image(self.img_in)
+        self.original_image = original_image
+        self.cuted_image = cuted_image
 
-        self.find_contours(self.image_processed)
-        self.image_with_shapes = self.__draw_shapes(self.img_in)
+        self.processed_image = process_image(self.cuted_image)
 
-    def find_contours(self, image):
-        self.__shapes, hier = cv2.findContours(copy(image), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        self.__find_shapes()
+        self.__draw_shapes()
 
-    def __draw_shapes(self, image_in):
-        img_with_shapes = copy(image_in)
+    def __find_shapes(self):
 
-        for shape in self.__shapes:
+        contours, hierarchy = cv2.findContours(self.processed_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:self.__max_shapes]
 
-            perimeter = cv2.arcLength(shape, True)
-            if perimeter > self.__perimeter_limit:
-                approx = cv2.approxPolyDP(shape, self.__perimeter_approximate * perimeter, True)
+        for c in contours:
 
-                if len(approx) == self.__shapes_sides:
+            peri = cv2.arcLength(c, True)
+            approx = cv2.approxPolyDP(c, self.__perimeter_approximate * peri, True)  # Approximating with 6% error
 
-                    cv2.drawContours(img_with_shapes, [shape], -1, (0, 255, 0), 1)
-                    (x, y, a, l) = cv2.boundingRect(shape)
-                    cv2.rectangle(img_with_shapes, (x, y), (x + a, y + l), (0, 255, 0), 2)
-                    roi = img_with_shapes[y:y + l, x:x + a]
+            if len(approx) == self.__shapes_sides:
 
-                    self.image_shapes.append(roi)
+                self.screenCnt = approx
+                break
 
-        return img_with_shapes
+    def __draw_shapes(self):
+
+        self.image_with_shapes = cv2.drawContours(self.cuted_image, [self.screenCnt], -1, (0, 255, 0), 3)
