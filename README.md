@@ -14,16 +14,20 @@ Orientador: Prof. Dr. Marco Túlio AlvesRodrigues
 sudo apt update
 sudo apt install tesseract-ocr
 sudo apt install libtesseract-dev
+virtualenv -p python3 ambiente-virtual
+source ambiente-virtual/bin/activate
+pip install -r requirements.txt
 
 <b>Linux-MAC:</b>
 
 brew install tesseract
-
 virtualenv -p python3 ambiente-virtual
-
 source ambiente-virtual/bin/activate
-
 pip install -r requirements.txt
+
+<b>Windows:</b>
+
+Sem suporte official :(
 
 ## Bibliotecas externas
 
@@ -31,5 +35,5 @@ opencv-contrib-python
 tesseract
 pillow
 
-## [Average Speed Radar - Central API](https://github.com/fnoquiq/average_speed_radar-central_api)
-## [Average Speed Radar - Documentação](https://github.com/fnoquiq/average_speed_radar-docs)
+## [Average Speed Radar - API](https://github.com/fnoquiq/average_speed_radar-central_api)
+## [Average Speed Radar - Docs](https://github.com/fnoquiq/average_speed_radar-docs)
