@@ -11,6 +11,7 @@ class ShapeDetector:
     processed_image = None
     image_with_shapes = None
     screenCnt = None
+    shape_detected = None
 
     __shapes_sides = 4
     # Select the contour with __shapes_sides corners
@@ -28,6 +29,7 @@ class ShapeDetector:
         self.processed_image = process_image(self.cuted_image)
 
         self.__find_shapes()
+        self.__cut_image_on_shape()
         self.__draw_shapes_in_cuted_image()
 
     def __find_shapes(self):
@@ -49,3 +51,11 @@ class ShapeDetector:
             self.image_with_shapes = cv2.drawContours(self.cuted_image, [self.screenCnt], -1, (0, 255, 0), 3)
         else:
             self.image_with_shapes = self.cuted_image
+
+    def __cut_image_on_shape(self):
+        if self.screenCnt is not None:
+            (x, y, w, h) = cv2.boundingRect(self.screenCnt)
+
+            self.shape_detected = copy(self.cuted_image[y:y + h, x:x + w])
+        else:
+            self.shape_detected = copy(self.cuted_image)
