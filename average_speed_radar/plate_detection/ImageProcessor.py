@@ -53,6 +53,7 @@ def __dilate_shapes_on_image(img_in):
 
 def process_image(img_in):
     gray_scale_out_image = __to_gray_scale_image(img_in)
+
     remove_noise = __remove_noise_on_image(gray_scale_out_image)
     equal_histogram = __histogram_equalisation_on_image(remove_noise)
     morph_image = __morphological_opening_image(equal_histogram)

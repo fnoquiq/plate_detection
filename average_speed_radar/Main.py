@@ -1,11 +1,12 @@
 import cv2
 
 from plate_detection.PlateDetection import PlateDetection
+from camera_integration.CameraIntegration import get_camera
 
-video = cv2.VideoCapture(0)
+camera = get_camera()
 
 while True:
-    conectado, frame = video.read()
+    conectado, frame = camera.read()
     detection = PlateDetection(frame)
     cv2.imshow('Imagem com Limites', detection.original_image)
     cv2.imshow('Imagem Contornada', detection.ShapeDetector.image_with_shapes)
@@ -13,5 +14,5 @@ while True:
     if cv2.waitKey(1) == ord('q'):
         break
 
-video.release()
+camera.release()
 cv2.destroyAllWindows()

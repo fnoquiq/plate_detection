@@ -5,6 +5,7 @@ Gabriel Teixeira Mesquita
 Orientador: Prof. Dr. Marco Túlio AlvesRodrigues
 
 ## Tecnologias utilizadas
+* Pycharm IDE
 * Python 3.6.7
 
 ## Instalação
