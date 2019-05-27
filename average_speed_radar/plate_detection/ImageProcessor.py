@@ -52,17 +52,32 @@ def __dilate_shapes_on_image(img_in):
 
 
 def process_image(img_in):
+    # cv2.imshow('img_in', img_in)
+
     gray_scale_out_image = __to_gray_scale_image(img_in)
+    # cv2.imshow('gray_scale_out_image', gray_scale_out_image)
 
     remove_noise = __remove_noise_on_image(gray_scale_out_image)
+    # cv2.imshow('remove_noise', remove_noise)
+
     equal_histogram = __histogram_equalisation_on_image(remove_noise)
+    # cv2.imshow('equal_histogram', equal_histogram)
+
     morph_image = __morphological_opening_image(equal_histogram)
+    # cv2.imshow('morph_image', morph_image)
+
     subtracted_image = __subtract_image(equal_histogram, morph_image)
+    # cv2.imshow('subtracted_image', subtracted_image)
+
     threshold_out_image = __to_threshold_image(subtracted_image)
+    # cv2.imshow('threshold_out_image', threshold_out_image)
 
     # blur_out_image = __blur_image(threshold_out_image)
 
     canny_image = __canny_image(threshold_out_image)
+    # cv2.imshow('canny_image', canny_image)
+
     dilated_image = __dilate_shapes_on_image(canny_image)
+    # cv2.imshow('dilated', dilated_image)
 
     return dilated_image

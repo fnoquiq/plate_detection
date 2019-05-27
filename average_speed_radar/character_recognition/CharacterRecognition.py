@@ -1,8 +1,10 @@
 import pytesseract
+import cv2
 
 
 class CharacterRecognition:
     img_in = None
+    enchanted_image = None
     result = "Desconhecido"
 
     __characters = None
@@ -10,10 +12,16 @@ class CharacterRecognition:
 
     def recognition(self, img_in):
         self.img_in = img_in
+        self.__enchant_characters_in_the_image()
         self.__characters = self.__image_to_string()
         self.__remove_noise()
 
         return self.result
+
+    def __enchant_characters_in_the_image(self):
+        y, cr, cb = cv2.split(cv2.cvtColor(self.img_in, cv2.COLOR_RGB2YCrCb))
+        y = cv2.equalizeHist(y)
+        self.enchanted_image = cv2.cvtColor(cv2.merge([y, cr, cb]), cv2.COLOR_YCrCb2RGB)
 
     def __image_to_string(self):
         return pytesseract.image_to_string(self.img_in, lang='eng')
@@ -25,6 +33,4 @@ class CharacterRecognition:
 
     def __remove_noise(self):
         if len(self.__characters) > 0:
-            print(self.__characters)
             self.result = self.__remove_special_chars(self.__characters)
-            print(self.result)
