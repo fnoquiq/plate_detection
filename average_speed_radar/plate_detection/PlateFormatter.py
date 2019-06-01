@@ -1,8 +1,13 @@
+import re
+
+
 def is_plate_format(string):
     return __is_contain_plate_size(string)
 
 
 def __is_contain_plate_size(string):
-    if len(string) == 7 or len(string) == 8:
+    prog = re.compile('[A-Z]{3}[-][0-9]{4}')
+    result = prog.search(string)
+
+    if result is not None:
         return True
-    return False
