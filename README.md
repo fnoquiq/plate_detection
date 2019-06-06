@@ -2,7 +2,7 @@
 
 Gabriel Teixeira Mesquita
 
-Orientador: Prof. Dr. Marco Túlio AlvesRodrigues
+Orientador: Prof. Dr. Marco Túlio Alves Rodrigues
 
 ## Tecnologias utilizadas
 * Pycharm IDE
